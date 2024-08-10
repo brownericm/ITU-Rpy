@@ -61,8 +61,10 @@ class __ITU840__():
     # This is an abstract class that contains an instance to a version of the
     # ITU-R P.840 recommendation.
 
-    def __init__(self, version=7):
-        if version == 8:
+    def __init__(self, version=9):
+        if version == 9:
+            self.instance = _ITU840_9_()
+        elif version == 8:
             self.instance = _ITU840_8_()
         elif version == 7:
             self.instance = _ITU840_7_()
@@ -104,7 +106,74 @@ class __ITU840__():
     def lognormal_approximation_coefficient(self, lat, lon):
         # Abstract method to compute the lognormal approximation coefficients
         return self.instance.lognormal_approximation_coefficient(lat, lon)
+class _ITU840_9_():
+    def __init__(self):
+        self.__version__ = 9
+        self.year = 2023
+        self.month = 8
+        self.link = 'https://www.itu.int/rec/R-REC-P.840-9-202308-I/en'
 
+        self._Lred = {}
+        self._M = None
+        self._sigma = None
+        self._Pclw = None
+
+    # Note: The dataset used in recommendation 840-8 is the same as the
+    # dataset use in recommendation 840-7. (The zip files included in
+    # both recommendations are identical)
+    def Lred(self, lat, lon, p):
+        if not self._Lred:
+            ps = [0.1, 0.2, 0.3, 0.5, 1, 2, 3, 5, 10, 20, 30,
+                  50, 60, 70, 80, 90, 95, 99]
+            d_dir = os.path.join(dataset_dir, '840/v9_L_%s.npz')
+            for p_load in ps:
+                self._Lred[float(p_load)] = load_data_interpolator(
+                    '840/v9_lat.npz', '840/v9_lon.npz',
+                    d_dir % (str(p_load).replace('.', '')),
+                    bilinear_2D_interpolator, flip_ud=False)
+
+        return self._Lred[float(p)](
+            np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
+
+    def M(self, lat, lon):
+        if not self._M:
+            self._M = load_data_interpolator(
+                '840/v9_lat.npz', '840/v9_lon.npz',
+                '840/v9_m.npz', bilinear_2D_interpolator, flip_ud=False)
+
+        return self._M(
+            np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
+
+    def sigma(self, lat, lon):
+        if not self._sigma:
+            self._sigma = load_data_interpolator(
+                '840/v9_lat.npz', '840/v9_lon.npz',
+                '840/v9_sigma.npz', bilinear_2D_interpolator, flip_ud=False)
+
+        return self._sigma(
+            np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
+
+    def Pclw(self, lat, lon):
+        if not self._Pclw:
+            self._Pclw = load_data_interpolator(
+                '840/v9_lat.npz', '840/v9_lon.npz',
+                '840/v9_pclw.npz', bilinear_2D_interpolator, flip_ud=False)
+
+        return self._Pclw(
+            np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
+
+    @staticmethod
+    def specific_attenuation_coefficients(f, T):
+        """
+        """
+        return _ITU840_6_.specific_attenuation_coefficients(f, T)
+
+    def lognormal_approximation_coefficient(self, lat, lon):
+        m = self.M(lat, lon)
+        sigma = self.sigma(lat, lon)
+        Pclw = self.Pclw(lat, lon)
+
+        return m, sigma, Pclw
 
 class _ITU840_8_():
 
@@ -523,7 +592,8 @@ def change_version(new_version):
     new_version : int
         Number of the version to use.
         Valid values are:
-          * 8: Activates recommendation ITU-R P.840-8 (08/19) (Current version)
+          * 9: Activates recommendation ITU-R P.840-9 (08/23) (Current Version)
+          * 8: Activates recommendation ITU-R P.840-8 (08/19) (Superseded)
           * 7: Activates recommendation ITU-R P.840-7 (12/17) (Superseded)
           * 6: Activates recommendation ITU-R P.840-6 (09/13) (Superseded)
           * 5: Activates recommendation ITU-R P.840-5 (02/12) (Superseded)
