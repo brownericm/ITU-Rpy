@@ -50,7 +50,8 @@ class __ITU840__():
     * P.840-5 (02/12) (Superseded)
     * P.840-6 (09/13) (Superseded)
     * P.840-7 (12/17) (Superseded)
-    * P.840-8 (08/19) (Current version)
+    * P.840-8 (08/19) (Superseded)
+    * P.840-9 (08/23) (Current version)
 
     Non-available versions include:
     * P.840-1 (08/94) (Superseded) - Tentative similar to P.840-4
