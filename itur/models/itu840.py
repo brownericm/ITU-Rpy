@@ -167,7 +167,43 @@ class _ITU840_9_():
     def specific_attenuation_coefficients(f, T):
         """
         """
-        return _ITU840_6_.specific_attenuation_coefficients(f, T)
+        if np.any(f > 1000):
+            raise ValueError('Frequency must be introduced in GHz and the '
+                             'maximum range is 1000 GHz')
+
+        T_kelvin = T + 273.75
+        theta = 300.0 / T_kelvin                # Eq. 9
+
+        # Compute the values of the epsilons
+        epsilon0 = 77.66 + 103.3 * (theta - 1)  # Eq. 6
+        epsilon1 = 0.0671 * epsilon0            # Eq. 7
+        epsilon2 = 3.52                         # Eq. 8
+
+        # Compute the principal and secondary relacation frequencies
+        fp = 20.20 - 146 * (theta - 1) + 316.0 * (theta - 1)**2     # Eq. 10
+        fs = 39.8 * fp                                              # Eq. 11
+
+        # Compute the dielectric permitivity of water
+        epsilonp = (epsilon0 - epsilon1) / (1 + (f / fp) ** 2) + \
+            (epsilon1 - epsilon2) / (1 + (f / fs) ** 2) + epsilon2  # Eq. 5
+
+        epsilonpp = f * (epsilon0 - epsilon1) / (fp * (1 + (f / fp)**2)) + \
+            f * (epsilon1 - epsilon2) / (fs * (1 + (f / fs)**2))       # Eq. 4
+
+        eta = (2 + epsilonp) / epsilonpp                             # Eq. 3
+        cloud_coeff = (0.819 * f) / (epsilonpp * (1 + eta**2))       # Eq. 2
+
+        A1 = 0.1522
+        A2 = 11.51
+        A3 = -10.4912
+        f1 = -23.9589
+        f2 = 219.2096
+        sig1 = 3.2991 * 10 ** 3
+        sig2 = 2.7595 * 10 ** 6
+
+        Kl = cloud_coeff * (A1 * np.exp(-((f - f1) ** 2 / sig1)) + A2 * np.exp(-((f - f2) ** 2 / sig2)) + A3) # Eq. 12
+
+        return Kl       # Specific attenuation coefficient  (dB/km)/(g/m3)
 
     def lognormal_approximation_coefficient(self, lat, lon):
         m = self.M(lat, lon)
