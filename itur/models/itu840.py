@@ -126,10 +126,10 @@ class _ITU840_9_():
         if not self._Lred:
             ps = [0.1, 0.2, 0.3, 0.5, 1, 2, 3, 5, 10, 20, 30,
                   50, 60, 70, 80, 90, 95, 99]
-            d_dir = os.path.join(dataset_dir, '840/v9_L_%s.txt')
+            d_dir = os.path.join(dataset_dir, '840/v9_L_%s.npz')
             for p_load in ps:
                 self._Lred[float(p_load)] = load_data_interpolator(
-                    '840/v9_lat.txt', '840/v9_lon.txt',
+                    '840/v9_lat.npz', '840/v9_lon.npz',
                     d_dir % (str(p_load).replace('.', '')),
                     bilinear_2D_interpolator, flip_ud=False)
 
@@ -139,8 +139,8 @@ class _ITU840_9_():
     def M(self, lat, lon):
         if not self._M:
             self._M = load_data_interpolator(
-                '840/v9_lat.txt', '840/v9_lon.txt',
-                '840/v9_m.txt', bilinear_2D_interpolator, flip_ud=False)
+                '840/v9_lat.npz', '840/v9_lon.npz',
+                '840/v9_m.npz', bilinear_2D_interpolator, flip_ud=False)
 
         return self._M(
             np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
@@ -148,8 +148,8 @@ class _ITU840_9_():
     def sigma(self, lat, lon):
         if not self._sigma:
             self._sigma = load_data_interpolator(
-                '840/v9_lat.txt', '840/v9_lon.txt',
-                '840/v9_sigma.txt', bilinear_2D_interpolator, flip_ud=False)
+                '840/v9_lat.npz', '840/v9_lon.npz',
+                '840/v9_sigma.npz', bilinear_2D_interpolator, flip_ud=False)
 
         return self._sigma(
             np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
@@ -157,8 +157,8 @@ class _ITU840_9_():
     def Pclw(self, lat, lon):
         if not self._Pclw:
             self._Pclw = load_data_interpolator(
-                '840/v9_lat.txt', '840/v9_lon.txt',
-                '840/v9_pclw.txt', bilinear_2D_interpolator, flip_ud=False)
+                '840/v9_lat.npz', '840/v9_lon.npz',
+                '840/v9_pclw.npz', bilinear_2D_interpolator, flip_ud=False)
 
         return self._Pclw(
             np.array([lat.ravel(), lon.ravel()]).T).reshape(lat.shape)
