@@ -146,3 +146,12 @@ write_test_cases.py
 
 # Local Claude Code project guide (not for version control)
 CLAUDE.md
+
+# AI Assistant guide (not for version control)
+AGENTS.md
+
+# ITU Recommendation PDFs (reference documents)
+.PDFs/
+
+# Large data files (download separately)
+itur/data/2145/
