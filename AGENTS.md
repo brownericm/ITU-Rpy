@@ -129,6 +129,7 @@ twine upload dist/*
 | P.1511 | 0-2 | Topography | [Link](https://www.itu.int/rec/R-REC-P.1511) |
 | P.1623 | 0-1 | Fade dynamics | [Link](https://www.itu.int/rec/R-REC-P.1623) |
 | P.1853 | 0-1 | Time series synthesis | [Link](https://www.itu.int/rec/R-REC-P.1853) |
+| P.2145 | 0 | Meteorological digital maps | [Link](https://www.itu.int/rec/R-REC-P.2145) |
 
 ## File Structure
 
@@ -243,6 +244,36 @@ def function_name(...):
    - Data file not found: Check path in `dataset_dir`
    - Out of bounds: Verify lat/lon within data extent
    - Slow performance: Interpolator caches results, but may need optimization for large arrays
+
+### Working with Large Data Files
+
+ITU-R P.2145 uses 2.3 GB of meteorological data that must be downloaded separately:
+
+```bash
+# Download data
+python scripts/download_p2145_data.py
+```
+
+Data source: Zenodo (DOI: [10.5281/zenodo.18872526](https://doi.org/10.5281/zenodo.18872526))
+
+The data is not included in the git repository to keep the repository size manageable. 
+
+**Implementation Details:**
+- Data files are stored in `itur/data/2145/` (not tracked by git)
+- Functions automatically check for data availability
+- Users receive clear error messages with download instructions if data is missing
+- Download script: `scripts/download_p2145_data.py`
+- Download utility: `itur.utils.data_downloader.download_p2145_data()`
+
+**Adding New Large Datasets:**
+If adding recommendations with large datasets (>100 MB), follow the P.2145 pattern:
+1. Add data files to `itur/data/{number}/`
+2. Add `itur/data/{number}/` to `.gitignore`
+3. Upload data to Zenodo or similar repository
+4. Create download utility in `itur/utils/data_downloader.py`
+5. Create standalone download script in `scripts/`
+6. Add data availability checks to model functions
+7. Document in README.md and AGENTS.md
 
 ### Working with Astrophysical Units
 

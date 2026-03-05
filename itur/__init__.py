@@ -40,6 +40,12 @@ from .models.itu836 import surface_water_vapour_density, total_water_vapour_cont
 from .models.itu840 import cloud_attenuation
 from .models.itu1510 import surface_mean_temperature
 from .models.itu1511 import topographic_altitude
+from .models.itu2145 import (
+    surface_pressure,
+    surface_temperature,
+    surface_water_vapour_density as surface_water_vapour_density_2145,
+    integrated_water_vapour_content,
+)
 
 # Ignore divide by zero errors
 np.seterr(divide="ignore")

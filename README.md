@@ -20,6 +20,33 @@ pip install itur
 
 More information about the installation process can be found on the [documentation](https://github.com/inigodelportillo/ITU-Rpy/blob/master/docs/installation.rst).
 
+### ITU-R P.2145 Data Installation
+
+ITU-R P.2145 requires 2.3 GB of global meteorological data files. These are not included in the package due to size constraints.
+
+**Install the data (required before using P.2145 functions):**
+
+```bash
+python scripts/download_p2145_data.py
+```
+
+**Or using Python:**
+
+```python
+from itur.utils import download_p2145_data
+download_p2145_data()
+```
+
+**Manual Installation:**
+
+1. Download from: https://zenodo.org/record/18872526
+2. Extract the archive to `itur/data/2145/`
+
+**Data Details:**
+- Source: Zenodo (DOI: [10.5281/zenodo.18872526](https://doi.org/10.5281/zenodo.18872526))
+- Size: 1.8 GB compressed, 2.3 GB extracted
+- License: CC-BY-4.0
+
 ## ITU-R Recommendations implemented
 The following ITU-R Recommendations are implemented in ITU-Rpy
 *   **ITU-R P.453-13:** The radio refractive index: its formula and refractivity data
@@ -37,6 +64,7 @@ The following ITU-R Recommendations are implemented in ITU-Rpy
 *   **ITU-R P.1511-2:** Topography for Earth-to-space propagation modelling
 *   **ITU-R P.1623-1:** Prediction method of fade dynamics on Earth-space paths
 *   **ITU-R P.1853-1:** Tropospheric attenuation time series synthesis
+*   **ITU-R P.2145-0:** Digital maps related to the calculation of gaseous attenuation and related effects
 
 The individual models can be accessed using the `itur.models` package.
 
